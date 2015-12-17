@@ -1,133 +1,89 @@
-Crosswalk-app-tools
-===================
+### WebVR + GearVR with Crosswalk
 
-Crosswalk-app-tools is our forthcoming packaging tool for creating Crosswalk applications. We are inviting early adopters to build their web applications using crosswalk-app-tools, and provide feedback for future improvements.
+This is a fork of [crosswalk-app-tools](https://github.com/crosswalk-project/crosswalk-app-tools) intended to build applications for GearVR.
 
+Mainly this introduces changes to the `AndroidManifest.xml` template. You can also build a Crosswalk application without these app tools, which means you don't need this repo to get Crosswalk working with GearVR.
 
-### Installation
+The following describes the steps necessary to build a WebVR/WebGL app for your GearVR (Android).
 
-The tools are cross-platform by virtue of being based on Node.js. We are supporting Microsoft Windows, Apple OS X and Linux as host operating systems.
+For more details on this workflow, see [crosswalk-app-tools](https://github.com/crosswalk-project/crosswalk-app-tools) and [crosswalk-project.org](https://crosswalk-project.org).
 
-The following components are required
-  * Node.js and NPM
-  * Android development (APK packages): Android SDK with 5.0 (target-21) or later installed, plus Java JDK and Apache Ant. Supported host systems are Apple OS X, Linux, and Windows.
-  * Windows development (MSI packages): [WiX Toolset](http://wixtoolset.org). MSI installers can only be created on Windows systems.
+## GearVR Tutorial
 
-In order to get the tools available from the command-line easily, global npm installation is recommended.
+Make a new project folder, `cd` into it and make a release folder:
 
-Microsoft Windows: `npm install -g crosswalk-app-tools`
-
-Apple OS X and Linux: `sudo npm install -g crosswalk-app-tools`
-
-The best way to check if a machine has all the required dependencies is to create and build a plain empty Android app 
-on the system. If this does not work, then building Crosswalk apps will not succeed either. App-tools provides a command for doing this:
-
-Check Android target setup:
-```
-crosswalk-app check android
-```
-Check Windows target setup:
-```
-crosswalk-app check windows
+```sh
+mkdir my-project
+cd my-project
+mkdir release
 ```
 
-Two executables are provided, `crosswalk-app` implements low level helper commands, `crosswalk-pkg` is the main tool for creating packages.
+We use a `release` folder so that our `node_modules` and other files won't be included in the Crosswalk application. You can name it whatever.
 
-### Usage (crosswalk-pkg --help)
+Add `release/index.html` like this:
 
-```
-  Crosswalk Project Packaging Tool -- https://crosswalk-project.org
-  Usage: crosswalk-pkg <options> <path>
-
-  <options>
-    -a --android=<android-conf>      Extra configurations for Android
-    -c --crosswalk=<version-spec>    Specify Crosswalk version or path
-    -h --help                        Print usage information
-    -k --keep                        Keep build tree for debugging
-    -m --manifest=<package-id>       Fill manifest.json with default values
-    -p --platforms=<android|windows> Specify target platform
-    -r --release                     Build release packages
-    -t --targets=<target-archs>      Target CPU architectures
-    -v --version                     Print tool version
-
-  <path>
-    Path to directory that contains a web app
-
-  <android-conf>
-    Quoted string with extra config, e.g. "shared"
-    * "shared" Build APK that depends on crosswalk in the Google Play Store
-    * "lite"   Use crosswalk-lite, see Crosswalk Wiki
-
-  <package-id>
-    Canonical application name, e.g. com.example.foo, needs to
-    * Comprise of 3 or more period-separated parts
-    * Begin with lowecase letters
-
-  <target-archs>
-    List of CPU architectures for which to create packages.
-    Currently supported ABIs are: armeabi-v7a, arm64-v8a, x86, x86_64
-    * Prefixes will be matched, so "a","ar", or "arm" yield both ARM APKs
-    * Same for "x" and "x8", but "x86" is an exact match, only x86-32 conforms
-    * Short-hands "32" and "64" build ARM and x86 for the requested word size
-    * Default behavior is equivalent to "32", creation of 32-bit installers
-    Example: --targets="arm x86" builds both ARM plus 32-bit x86 packages
-
-  <version-spec>
-    * Channel name, i.e. stable/beta/canary
-    * Version number, e.g. 14.43.343.25
-    * Path to release, e.g. $HOME/Downloads/crosswalk-14.43.343.25.zip
-    * Path to build, e.g. crosswalk/src/out/Release/xwalk_app_template
-    When passing a local file or directory, only the contained ABIs can be built.
-    See <target-archs> for details.
-
-  Environment variables
-    CROSSWALK_APP_TOOLS_CACHE_DIR=<path>: Keep downloaded files in this dir
-```
-### Example: Creating and packaging an application
-
-To get started, all you need is a web manifest, and an html file. The web manifest holds name and settings for your application. A minimal manifest.json looks like this:
-```
-{
-  "name": "My first Crosswalk application",
-  "start_url": "index.html",
-  "xwalk_package_id": "com.example.foo"
-}
-```
-
-Then add an index.html in the same directory:
-```
+```html
+<!DOCTYPE html>
 <html>
   <head>
-    <title>My first Crosswalk application</title>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <title>simple</title>
   </head>
-  <body>This is my first Crosswalk application</body>
+  <body>
+    <p>hello world</p>
+  </body>
 </html>
 ```
 
-Finally, time to create the APK package:
+Add `release/manifest.json` like this:
+
 ```
-crosswalk-pkg <path>
+{
+  "name": "My Crosswalk Example",
+  "start_url": "index.html",
+  "orientation": "landscape",
+  "xwalk_package_id": "com.foobar.example"
+}
 ```
-Creation of an MSI package on Windows:
+
+Now add a npm config so we can start installing dependencies:
+
+```sh
+# fill this out as needed
+npm init
 ```
-crosswalk-pkg -p windows <path>
+
+That will create a `package.json`. Now run:
+
+```sh
+npm install mattdesl/crosswalk-app-tools#gearvr --save-dev
 ```
-This sets up a skeleton project, downloads and imports Crosswalk, and creates a package using the files above.
 
+This will install this fork and save it in `devDependencies`. 
 
-### Next steps and limitations
-* Android release packages will have to be signed manually before they are published on Google's Play Store, as that functionality is not yet integrated. See https://developer.android.com/tools/publishing/app-signing.html#signing-manually for details.
-* We encourage everyone to use this app-tools and appreciate feedback, as we are looking to improve user friendliness and integration with Crosswalk in the coming releases.
+Now add the following to the `"scripts"` field in your `package.json`:
 
-### Additional target platforms
-There is forthcoming support for additional target platforms. For iOS packaging, see 
-https://github.com/crosswalk-project/crosswalk-app-tools-ios.
+```json
+"scripts": {
+  "xwalk": "crosswalk-pkg release/"
+}
+```
 
-### Run development versions from git
+Now run the following to build a new APK:
 
-1. Download: `npm install https://github.com/crosswalk-project/crosswalk-app-tools.git`
-4. The main script is `crosswalk-app-tools/src/crosswalk-pkg`. Set environment PATH or invoke with directory.
+```sh
+npm run xwalk
+```
 
+You can push the APK to the device with `adb push`. This can also be added to npm scripts for faster automation. e.g.
+
+```sh
+adb push com.foobar.example-0.1-debug.armeabi-v7a.apk /sdcard/
+```
+
+Now when you run the app, it will prompt you to insert it into your GearVR.
 
 ### License
 
