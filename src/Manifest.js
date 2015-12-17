@@ -271,7 +271,7 @@ function Manifest(output, path) {
 /**
  * Default permissions needed on android.
  */
-Manifest.ANDROID_DEFAULT_PERMISSIONS = [ "ACCESS_NETWORK_STATE", "ACCESS_WIFI_STATE", "INTERNET" ];
+Manifest.ANDROID_DEFAULT_PERMISSIONS = [ "ACCESS_NETWORK_STATE", "ACCESS_WIFI_STATE", "INTERNET", "READ_EXTERNAL_STORAGE" ];
 
 /**
  * Create default manifest data.
