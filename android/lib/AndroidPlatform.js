@@ -494,7 +494,7 @@ function(packageId, args, callback) {
                 // TODO verify version/channel
                 versionSpec = args.crosswalk;
             } else {
-                versionSpec = "stable";
+                versionSpec = "canary";
                 output.info("Defaulting to download channel " + versionSpec);
             }
 
