@@ -4,6 +4,8 @@
       android:versionCode="1"
       android:versionName="1.0"
       android:installLocation="auto">
+	<meta-data android:name="com.samsung.android.vr.application.mode"
+ android:value="vr_only"/>
     <application android:name="org.xwalk.core.XWalkApplication"
         android:hardwareAccelerated="true"
         android:label="{{ packageName }}"
@@ -13,9 +15,10 @@
                   android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"
                   android:launchMode="singleTask"
                   android:configChanges="orientation|keyboardHidden|keyboard|screenSize"
-                  android:excludeFromRecents="true"
-                  android:screenOrientation="unspecified"
-                  android:label="{{ packageName }}">
+                  android:screenOrientation="landscape"
+                  android:label="{{ packageName }}"
+                  android:launchMode="singleTask"
+                  android:excludeFromRecents="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.INFO" />
@@ -26,6 +29,7 @@
     </activity>
     <uses-sdk android:minSdkVersion="14" android:targetSdkVersion="21" />
     <uses-feature android:glEsVersion="0x00020000" android:required="true" />
+    <uses-sdk android:minSdkVersion="19" android:targetSdkVersion="19" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CAMERA"/>
@@ -35,4 +39,5 @@
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 </manifest>
