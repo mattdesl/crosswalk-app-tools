@@ -3,7 +3,7 @@
       package="{{ packageId }}"
       android:versionCode="1"
       android:versionName="1.0"
-      android:installLocation="auto">
+      android:installLocation="internalOnly">
     <application android:name="org.xwalk.core.XWalkApplication"
         android:hardwareAccelerated="true"
         android:label="{{ packageName }}"
